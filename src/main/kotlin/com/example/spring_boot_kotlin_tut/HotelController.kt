@@ -10,7 +10,7 @@ class HotelController(val hotelRepository: HotelRepository) {
     // Example of how to declare and define a method in a single line:
     fun all(): MutableIterable<Hotel> = this.hotelRepository.findAll()
 
-    @GetMapping("/(name)")
+    @GetMapping("/{name}")
     fun byName(@PathVariable(value = "name") name: String) : List<Hotel> {
         val hotelsByName = this.hotelRepository.findByName(name)
         return hotelsByName
