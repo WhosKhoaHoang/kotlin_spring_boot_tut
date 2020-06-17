@@ -30,5 +30,4 @@ class Hotel(val name: String, val classification: Int, val numRooms: Int) {
         this.numFreeRooms += numGuests
     }
 
-
 }
