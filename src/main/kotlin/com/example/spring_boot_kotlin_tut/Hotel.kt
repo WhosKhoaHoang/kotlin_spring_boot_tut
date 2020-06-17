@@ -20,6 +20,13 @@ class Hotel(val name: String, val classification: Int, val numRooms: Int) {
     var id: Long = 0
     var numFreeRooms: Int = numRooms
 
+    // You can define additional constructors for a
+    // Kotlin class with this constructor keyword.
+    // Here, we're implementing a constructor with
+    // default argument values (though it seems like
+    // the application actually runs just fine without it...)
+    constructor(): this("", 0, 0)
+
     fun checkInGuests(numGuests: Int) {
         if (this.numFreeRooms >= numGuests) {
             this.numFreeRooms -= numGuests
