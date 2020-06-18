@@ -1,0 +1,26 @@
+========== Dockerizing with Dockerfile ==========
+
+Create Dockerfile with the following contents:
+
+FROM java:8-jdk-alpine
+
+COPY ./target/<name_of_jar_file> /usr/app/
+
+WORKDIR /usr/app
+
+RUN sh -c 'touch <name_of_jar_file>'
+
+ENTRYPOINT ["java","-jar","<name_of_jar_file>"]
+
+
+
+Navigate to the directory where the Dockerfile resides and run this command:
+$ docker build -t <name_of_your_image> .
+We built the image using docker build. We gave it a name with the -t flag and specified the current directory where the Dockerfile is. The image is built and stored in our local docker registry.
+
+
+
+Run the image with this command:
+$ docker run -p 8090:8080  <name_of_your_image>
+
+We know that each container is an isolated environment in itself and we have to map the port of the host operating system - 8090 and the port inside the container - 8080, which is specified as the -p 8090:8080 argument. 
