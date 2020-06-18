@@ -1,6 +1,10 @@
+Credit to:
+https://stackabuse.com/dockerizing-a-spring-boot-application/
+
+
 ========== Dockerizing with Dockerfile ==========
 
-Create Dockerfile with the following contents:
+. Create Dockerfile with the following contents:
 
 FROM java:8-jdk-alpine
 
@@ -14,13 +18,78 @@ ENTRYPOINT ["java","-jar","<name_of_jar_file>"]
 
 
 
-Navigate to the directory where the Dockerfile resides and run this command:
-$ docker build -t <name_of_your_image> .
+. Navigate to the directory where the Dockerfile resides and run this command:
+docker build -t <name_of_your_image> .
 We built the image using docker build. We gave it a name with the -t flag and specified the current directory where the Dockerfile is. The image is built and stored in our local docker registry.
 
 
 
-Run the image with this command:
-$ docker run -p 8090:8080  <name_of_your_image>
+. Run the image with this command:
+docker run -p 8090:8080  <name_of_your_image>
 
 We know that each container is an isolated environment in itself and we have to map the port of the host operating system - 8090 and the port inside the container - 8080, which is specified as the -p 8090:8080 argument. 
+
+
+
+
+========== Dockerizing with Maven Docker plugin ==========
+
+In the previous section we wrote a simple Dockerfile and build our application using the native docker build command. However, there are a couple of issues that we may encounter in our projects using this method:
+
+* The .jar name - We have to mention the jar name (along with the version) in the file. As our application grows our versions will change and we have to, again and again, update this Dockerfile too.
+* Using the terminal - We have to manually open a terminal and run Docker commands. It would be nice if we could make it a part of a Maven life-cycle so that we can build images as a part of our CI/CD (Continous Integration/Continous Delivery) pipelines.
+
+
+
+. The Docker Maven plugin is called fabric8io/docker-maven-plugin.
+
+
+
+. Add XML for the Docker Maven plugin in pom.xml:
+
+<plugin>
+   <groupId>io.fabric8</groupId>
+   <artifactId>docker-maven-plugin</artifactId>
+   <version>0.26.0</version>
+   <extensions>true</extensions>
+   <configuration>
+      <verbose>true</verbose>
+      <images>
+         <image>
+            <name>${project.artifactId}</name>
+            <build>
+               <from>java:8-jdk-alpine</from>
+               <entryPoint>
+                  <exec>
+                     <args>java</args>
+                     <args>-jar</args>
+                     <args>/maven/${project.artifactId}-${project.version}.jar</args>
+                  </exec>
+               </entryPoint>
+               <assembly>
+                  <descriptorRef>artifact</descriptorRef>
+               </assembly>
+            </build>
+         </image>
+      </images>
+   </configuration>
+   <executions>
+      <execution>
+         <id>build</id>
+         <phase>post-integration-test</phase>
+         <goals>
+            <goal>build</goal>
+         </goals>
+      </execution>
+   </executions>
+</plugin>
+
+
+
+. Run this command in your project folder
+mvn clean install -Ddocker 
+
+
+
+. Run the image with this command:
+docker run -p 8090:8080  <name_of_your_image>
