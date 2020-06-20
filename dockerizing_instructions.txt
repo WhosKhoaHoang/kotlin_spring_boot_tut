@@ -19,7 +19,7 @@ ENTRYPOINT ["java","-jar","<name_of_jar_file>"]
 
 
 . Navigate to the directory where the Dockerfile resides and run this command:
-docker build -t <name_you_wanna_give_your_image> .
+docker build -t <name_you_wanna_give_your_image>:<version_no> .
 We built the image using docker build. We gave it a name with the -t flag and specified the current directory where the Dockerfile is. The image is built and stored in our local docker registry.
 
 
