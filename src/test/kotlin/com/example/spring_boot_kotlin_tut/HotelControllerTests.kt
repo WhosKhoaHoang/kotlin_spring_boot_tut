@@ -27,10 +27,10 @@ class HotelControllerTests {
 	fun `Empty hotel is empty`() {
 		// Note that DbSeeder.kt doesn't seem to run for tests!
 		//  - Proof?: "Database has been initialized does not appear on the console
-		mockMvc.perform(MockMvcRequestBuilders.get("/hotels/all"))
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/hotels/all"))
 				.andExpect(MockMvcResultMatchers.content().string("[]"))
 
-		//mockMvc.get("/hotels/all")
+		//this.mockMvc.get("/hotels/all")
 	}
 
 
@@ -41,13 +41,13 @@ class HotelControllerTests {
 		hotelLst.add(hotel)
 
 		val testHotelName = "Test"
-		`when`(hotelRepository.findByName(testHotelName)).thenReturn(hotelLst)
+		`when`(this.hotelRepository.findByName(testHotelName)).thenReturn(hotelLst)
 
 		// There's probably a more graceful way to specify the expected returned
 		// content. Perhaps you can override Hotel's toString method?
 		val expectedContent = "[{\"name\":\"APA Hotel\",\"classification\":3," +
 							  "\"numRooms\":30,\"id\":0,\"numFreeRooms\":30}]"
-		mockMvc.perform(MockMvcRequestBuilders.get("/hotels/"+testHotelName))
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/hotels/"+testHotelName))
 				.andExpect(MockMvcResultMatchers.content().string(expectedContent))
 	}
 
@@ -60,8 +60,8 @@ class HotelControllerTests {
 		val hotelLst = mutableListOf<Hotel>()
 		hotelLst.add(hotel)
 
-		`when`(hotelRepository.findByName("APA Hotel")).thenReturn(hotelLst)
-		//`when`(hotelRepository.save(Mockito.any<Hotel>())).thenAnswer { i -> i.getArguments()[0] }
+		`when`(this.hotelRepository.findByName("APA Hotel")).thenReturn(hotelLst)
+		//`when`(this.hotelRepository.save(Mockito.any<Hotel>())).thenAnswer { i -> i.getArguments()[0] }
 		// NOTE: If writing unit test, don't expect to be able to save to repository? Need
 		//       to make an integration test for that? See here:
 		// 			https://stackoverflow.com/questions/47738937/
@@ -70,16 +70,16 @@ class HotelControllerTests {
 				mapOf("hotelName" to "APA Hotel", "numGuests" to 2))
 
 		// ===== Old way of using mockMvc =====
-		//mockMvc.perform(MockMvcRequestBuilders.post("/hotels/checkin")
+		//this.mockMvc.perform(MockMvcRequestBuilders.post("/hotels/checkin")
 		//		.content(payload))
 		// ===== New way of using mockMvc =====
-		mockMvc.post("/hotels/checkin") {
+		this.mockMvc.post("/hotels/checkin") {
 			contentType = MediaType.APPLICATION_JSON
 			content = payload
 		}.andExpect { status { isOk } }
 
 		// Make a GET request to "/all" endpoint to check if you actually created something???
-		//mockMvc.perform(MockMvcRequestBuilders.get("/hotels/all"))
+		//this.mockMvc.perform(MockMvcRequestBuilders.get("/hotels/all"))
 		//		.andExpect(MockMvcResultMatchers.content().string("[]"))
 	}
 }
