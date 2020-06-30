@@ -28,5 +28,7 @@ class HotelController(val hotelRepository: HotelRepository) {
         val hotel = this.hotelRepository.findByName(checkInRequest.hotelName).get(0)
         hotel.checkInGuests(checkInRequest.numGuests)
         this.hotelRepository.save(hotel)
+
+        // THINK: Might it be better practice to return something after successfully POST'ing?
     }
 }
